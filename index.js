@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 client.once('ready', () => {
 	console.log('Ready!');
+    console.log('I am online :-)')
 });
 
 client.login(process.env.TOKEN);
