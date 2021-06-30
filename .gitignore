@@ -2,3 +2,5 @@ node_modules
 package-lock.json
 .env
 config.json
+gs-config.json
+.eslintrc.json
