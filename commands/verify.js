@@ -4,7 +4,7 @@ const {
 	spreadsheetId,
 	sheetName,
 } = require('../services/googleSheetsService.js');
-
+const {prefix}= require('../config.json');
 
 
 async function assignRole(branch, gradYear, message) {
@@ -100,7 +100,7 @@ module.exports = {
 			getDetails(message, username);
 		}
 		else {
-			message.reply("The command you are looking for is-!verify me");
+			message.reply(`The command you are looking for is-${prefix}verify me`);
 		}
 	}
 }
