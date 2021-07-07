@@ -2,8 +2,9 @@ module.exports = {
     name: 'campusdrive',
     description: 'creating new channel for new company',
     execute(message, args) {
-        //message.author.roles.cache.some(role => role.name === 'Mod');
-        //if the author has permission to run this command
+        let companyName = args[0];
+        let companyFor = args[1];
+        
         if (!message.member.roles.cache.some(role => role.name.includes("TPC"))) {
             message.reply('You do not have the permission to run this command');
             return;
@@ -26,10 +27,21 @@ module.exports = {
 
         mentionedroles.each(role => po.push({ id: role.id, allow: ['VIEW_CHANNEL'], }));
 
-        message.guild.channels.create(args[0], {
+        const guild = message.guild;
+        
+        if (companyFor != 'Placement' && companyFor != 'Internship') { 
+            message.reply('Please Check the Category name'); 
+            return;
+         }
+        guild.channels.create(companyName, {
             type: 'text',
-            permissionOverwrites: po
-        });
+            permissionOverwrites: po,
+        }).then(channel => {
+            let category = guild.channels.cache.find(c => c.name == companyFor && c.type == "category");
+
+            if (!category) throw new Error("Category channel does not exist");
+            channel.setParent(category.id);
+        }).catch(console.error);
 
         message.reply('Channel created successfully !!!');
 

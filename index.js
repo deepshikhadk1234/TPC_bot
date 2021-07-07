@@ -39,7 +39,7 @@ client.on('message', message => {
 	const command = args.shift().toLowerCase();
 
 	if (!client.commands.has(command)) return;
-console.log(message);
+//console.log(message);
 	try {
 		client.commands.get(command).execute(message, args);
 		
@@ -53,9 +53,7 @@ console.log(message);
 app.get('/', (request, response) => {
 	return response.sendFile('index.html', { root: '.' });
 });
-
-app.listen(port, () => console.log(`App listening at http://localhost:${port}`));
-
-
+createSpreadSheet()
+//app.listen(port, () => console.log(`App listening at http://localhost:${port}`));
 
 //appendRow([["abcd"]]);
