@@ -12,6 +12,7 @@ async function getAuthToken() {
     keyFile: 'gs-config.json' // path to the goog-sheets.json key file
   });
   const authToken = await auth.getClient();
+  google.options({auth:authToken});
   return authToken;
 }
 
@@ -32,41 +33,88 @@ async function getSpreadSheetValues({ spreadsheetId, auth, sheetName }) {
   return res;
 }
 
-async function appendRow({ values }) {
+const appendRow = async (spreadsheetId, sheetName, values) => {
   const auth = await getAuthToken();
+  // console.log(values[0][0]);
   try {
-    const res = await sheets.spreadsheets.values.append({
-      "spreadsheetId": "1pxHmS0Igyr6unWgmcnr7ekEfxwCjxvbheGrs163Rf-8",
-      "range": "Sheet1",
-      "includeValuesInResponse": true,
-      "insertDataOption": "INSERT_ROWS",
-      "responseDateTimeRenderOption": "FORMATTED_STRING",
-      "responseValueRenderOption": "UNFORMATTED_VALUE",
-      "valueInputOption": "RAW",
-      auth: auth,
+    const response = await sheets.spreadsheets.values.append({
+      auth,
+      spreadsheetId,
+      range: sheetName,
+      insertDataOption: "INSERT_ROWS",
 
-      // Request body metadata
-      resource:
-      {
-        "values": values
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: values,
       },
-
-
     });
-    console.log(res.data);
+
+    console.log(response.data);
     console.log('success');
-    return res;
+    return response;
   }
   catch (err) {
     console.error(err);
   }
 }
 
+async function createSpreadSheet() {
+  /* const appendOption = {
+    "spreadsheetId": spreadsheetId, //You will insert this later
+    "range": "A:A",
+    "valueInputOption": "USER_ENTERED",
+    "resource": {
+      "values": [
+        [
+          "a"
+        ]
+      ]
+    }
+  } */
+  const resource = {
+    properties: {
+      title: "SpreadSheet 1",
+    },
+  };
+  sheets.spreadsheets.create({
+    resource,
+    fields: 'spreadsheetId',
+  }, (err, spreadsheet) =>{
+    if (err) {
+      // Handle error.
+      console.log(err);
+    } else {
+      console.log(`Spreadsheet ID: ${spreadsheet.spreadsheetId}`);
+    }
+  });
+
+  /* sheets.spreadsheets.create(createOption, function (err, response) {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log(`SpreadSheetid: ${response.spreadsheetId}`);
+    //response contains the `Spreadsheet` resource we want, with it's fileId
+    appendOption.spreadsheetId = response.spreadsheetId; //Set the spreadsheet Id to insert the values on.
+    sheets.spreadsheets.values.append(appendOption, function (err, response) {
+      if (err) {
+        console.error(err);
+        return;
+      }
+
+      //response contains the structure detailed on: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#response-body
+
+    });
+  }); */
+}
+
+
 module.exports = {
   getAuthToken,
   getSpreadSheet,
   getSpreadSheetValues,
   appendRow,
+  createSpreadSheet,
   spreadsheetId,
   sheetName,
 }

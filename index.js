@@ -9,7 +9,8 @@ const {
 	//getSpreadSheetValues,
 	spreadsheetId,
 	sheetName,
-	appendRow
+	appendRow,
+	createSpreadSheet
 } = require('./services/googleSheetsService.js');
 //const auth = await getAuthToken();
 dotenv.config();
@@ -53,7 +54,8 @@ client.on('message', message => {
 app.get('/', (request, response) => {
 	return response.sendFile('index.html', { root: '.' });
 });
-createSpreadSheet()
-//app.listen(port, () => console.log(`App listening at http://localhost:${port}`));
 
-//appendRow([["abcd"]]);
+createSpreadSheet()
+app.listen(port, () => console.log(`App listening at http://localhost:${port}`));
+
+appendRow(spreadsheetId, sheetName, [["", "PC"]]);
